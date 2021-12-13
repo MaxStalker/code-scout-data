@@ -1,0 +1,19 @@
+{
+  "name": "code-scout-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@onflow/fcl": "^0.0.77",
+    "esm": "^3.2.25",
+    "flow-cadut": "^0.1.15-alpha.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}
