@@ -16,14 +16,12 @@ const filterImports = (imp) => {
 };
 
 (async () => {
-  // const accountData = [];
   await setEnvironment("mainnet");
   const accountData = [];
   await Promise.all(
-    addresses.slice(0, 5).map(async (address) => {
+    addresses.map(async (address) => {
       console.log(`Processing: ${address}`);
       const { account } = await fcl.send([fcl.getAccount(address)]);
-      console.log(`Got: ${address}`);
       const contractNames = Object.keys(account.contracts);
       for (const contractName of contractNames) {
         const code = account.contracts[contractName];
@@ -32,15 +30,20 @@ const filterImports = (imp) => {
         accountData.push({
           address,
           contractName,
-          // code,
+          code,
           imports,
         });
       }
     })
   );
 
-  console.log({ accountData });
+  console.log("Done!");
 
+  console.log("Formatting...");
   let data = prettier.format(JSON.stringify(accountData), { parser: "json" });
+
+  console.log("Writing to file...");
   fs.writeFileSync("deployed-contracts.json", data);
+
+  console.log("Success :)");
 })();
