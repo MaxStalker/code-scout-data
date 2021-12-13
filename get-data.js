@@ -15,26 +15,30 @@ const filterImports = (imp) => {
   return clear;
 };
 
+const processAddress = async (address, add) => {
+  console.log(`Processing: ${address}`);
+  const { account } = await fcl.send([fcl.getAccount(address)]);
+  const contractNames = Object.keys(account.contracts);
+  for (const contractName of contractNames) {
+    const code = account.contracts[contractName];
+    const imports = filterImports(extractImports(code));
+    console.log(contractName);
+    add({
+      address,
+      contractName,
+      code,
+      imports,
+    });
+  }
+};
+
 (async () => {
   await setEnvironment("mainnet");
   const accountData = [];
   await Promise.all(
-    addresses.map(async (address) => {
-      console.log(`Processing: ${address}`);
-      const { account } = await fcl.send([fcl.getAccount(address)]);
-      const contractNames = Object.keys(account.contracts);
-      for (const contractName of contractNames) {
-        const code = account.contracts[contractName];
-        const imports = filterImports(extractImports(code));
-        console.log(contractName);
-        accountData.push({
-          address,
-          contractName,
-          code,
-          imports,
-        });
-      }
-    })
+    addresses.map((address) =>
+      processAddress(address, (value) => accountData.push(value))
+    )
   );
 
   console.log("Done!");
